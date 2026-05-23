@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Relatório Gerencial de Operação</title>
+<link rel="stylesheet" href="style.css"/>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+</head>
+<body>
+
+<!-- SVG sprite -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="ico-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+  <symbol id="ico-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+  <symbol id="ico-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="ico-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
+  <symbol id="ico-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
+  <symbol id="ico-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></symbol>
+  <symbol id="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="ico-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="ico-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 7V4H6l6 8-6 8h12v-3"/></symbol>
+  <symbol id="ico-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ico-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ico-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="ico-arrows" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="ico-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="ico-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="ico-user-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></symbol>
+  <symbol id="ico-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="ico-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+</svg>
+
+<!-- Topbar -->
+<header class="topbar">
+  <div class="brand">
+    <div class="icon"><svg class="w5 h5"><use href="#ico-chart"/></svg></div>
+    <div>
+      <h1>Relatório Gerencial de Operação</h1>
+      <p>Visão consolidada por chave de nota (notas únicas)</p>
+    </div>
+  </div>
+  <div class="actions">
+    <label class="btn btn-primary upload-label">
+      <svg class="w4 h4"><use href="#ico-upload"/></svg> Importar Relatório (.xlsx / .zip)
+      <input id="fileInput" type="file" accept=".xlsx,.xls,.zip"/>
+    </label>
+    <button id="btnExport" class="btn btn-primary" disabled><svg class="w4 h4"><use href="#ico-download"/></svg> Exportar Relatório</button>
+    <button id="btnClear" class="btn" disabled><svg class="w4 h4"><use href="#ico-trash"/></svg> Limpar cache</button>
+  </div>
+</header>
+
+<!-- Loading -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="box">
+    <div class="spinner"></div>
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" viewBox="0 0 80 80">
+        <circle class="progress-ring-bg" cx="40" cy="40" r="34"/>
+        <circle class="progress-ring-fg" id="progressCircle" cx="40" cy="40" r="34"/>
+      </svg>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <h3>Processando seu relatório...</h3>
+    <p id="loadingMsg">Lendo arquivo...</p>
+  </div>
+</div>
+
+<main>
+  <!-- Empty state -->
+  <section id="emptyState" class="empty-state">
+    <div class="empty-box">
+      <div class="icon"><svg style="width:3.5rem;height:3.5rem"><use href="#ico-upload"/></svg></div>
+      <h2>Importe seu Relatório</h2>
+      <p>Selecione um arquivo Excel exportado (ex.: <strong>Relatório_15.xlsx</strong>) com a aba <code>Export</code>. O cálculo é feito 100% no seu navegador e fica salvo em cache.</p>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboard" class="hidden"></section>
+</main>
+
+<footer>Dados salvos automaticamente no cache do navegador (localStorage).</footer>
+
+<!-- Modal -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal-bg" id="modalBg"></div>
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalTitle"></h3>
+        <p class="sub" id="modalSub"></p>
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <button id="modalExport" class="btn btn-primary"><svg class="w4 h4"><use href="#ico-download"/></svg> Exportar XLSX</button>
+        <button id="modalClose" class="btn"><svg class="w4 h4"><use href="#ico-x"/></svg></button>
+      </div>
+    </div>
+    <div class="modal-filters">
+      <div class="search-box">
+        <svg class="w4 h4"><use href="#ico-search"/></svg>
+        <input id="modalSearch" placeholder="Buscar (nota, OF, coleta, filial...)"/>
+      </div>
+      <div class="filter-group"><label>Filial</label><select id="fFilial"><option value="">Todas</option></select></div>
+      <div class="filter-group"><label>Range</label><select id="fRange"><option value="">Todos</option></select></div>
+      <div class="filter-group"><label>SLA</label><select id="fSla"><option value="">Todos</option></select></div>
+      <div class="filter-group"><label>Janela</label><select id="fJanela"><option value="">Todas</option></select></div>
+      <div class="filter-group"><label>Vocativo</label><input id="fVocativo" type="text" placeholder="Filtrar vocativo..." class="filter-input"/></div>
+      <div class="filter-group combobox-group" id="clienteComboWrap">
+        <label>Cliente</label>
+        <div class="combobox">
+          <input id="fCliente" type="text" placeholder="Pesquisar cliente..." class="filter-input" autocomplete="off"/>
+          <svg class="w4 h4 combo-arrow"><use href="#ico-chevron"/></svg>
+          <div class="combobox-list hidden" id="clienteList"></div>
+        </div>
+      </div>
+      <span class="filter-count" id="filterCount"></span>
+    </div>
+    <div class="modal-table-wrap">
+      <table class="data-table" id="modalTable">
+        <thead id="modalThead"></thead>
+        <tbody id="modalTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Config Modal -->
+<div id="configOverlay" class="modal-overlay hidden">
+  <div class="modal-bg" id="configBg"></div>
+  <div class="modal-box" style="width:min(520px,96vw);height:auto;max-height:80vh">
+    <div class="modal-head">
+      <div>
+        <h3>Configurar visões</h3>
+        <p class="sub">Marque as seções que você quer ver no dashboard.</p>
+      </div>
+      <button id="configClose" class="btn"><svg class="w4 h4"><use href="#ico-x"/></svg></button>
+    </div>
+    <div id="configList" class="config-list"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+  
